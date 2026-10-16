@@ -1,16 +1,15 @@
-"""
-MovieVault backend — FastAPI entrypoint.
-
-This is a starter scaffold. Each route below corresponds to a planned
-MVP feature / GitHub Issue and currently returns placeholder data.
-Replace the placeholders with real TMDB API calls as you build each
-feature on its own branch.
-"""
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import requests
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 app = FastAPI(title="MovieVault API", version="0.1.0")
+
+api_key = os.getenv("TMDB_API_KEY")
+rat = os.getenv("TMDB_RAT")
 
 # Allow the React dev server to call this API during local development.
 app.add_middleware(
@@ -30,7 +29,15 @@ def read_root():
 @app.get("/api/search")
 def search_movies(query: str = ""):
     # TODO: call TMDB /search/movie
-    return {"query": query, "results": []}
+    result = requests.get(
+    "https://api.themoviedb.org/3/search/movie",
+    headers={
+        "Authorization": f"Bearer {rat}",
+        "accept": "application/json",
+    },
+    params={"query": query},
+    timeout=10,)
+    return {"query": query, "results": result.json()}
 
 
 # --- Feature: Movie Details --------------------------------------------------

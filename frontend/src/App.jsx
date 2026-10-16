@@ -10,8 +10,12 @@ export default function App() {
     e.preventDefault();
     // TODO: replace with real results once /api/search calls TMDB
     const res = await fetch(`${API_BASE}/api/search?query=${encodeURIComponent(query)}`);
+    //const res = search_movies(query);
     const data = await res.json();
-    setResults(data.results);
+    console.log("Response: ", data);
+    console.log("Results: ", data.results);
+    //console.log("Array?: "+Arrays.isArray(data.results));
+    setResults(data.results.results);
   }
 
   return (
